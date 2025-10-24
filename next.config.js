@@ -1,7 +1,31 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    serverActions: true,
+    serverActions: {}
+  },
+  // Disable server components external packages for Edge Runtime
+  experimental: {
+    serverComponentsExternalPackages: ['bcryptjs', '@prisma/client']
+  },
+  // Disable Edge Runtime for problematic pages
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        dns: false,
+        child_process: false,
+        crypto: require.resolve('crypto-browserify'),
+        stream: require.resolve('stream-browserify'),
+        http: require.resolve('stream-http'),
+        https: require.resolve('https-browserify'),
+        os: require.resolve('os-browserify/browser'),
+        path: require.resolve('path-browserify'),
+      };
+    }
+    return config;
   },
   eslint: {
     // Warning: This allows production builds to successfully complete even if your project has ESLint errors.
