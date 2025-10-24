@@ -1,13 +1,26 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverActions: {}
+  // For Netlify deployment
+  output: 'export',
+  images: {
+    unoptimized: true,
   },
-  // Disable server components external packages for Edge Runtime
+  // Enable server actions
   experimental: {
-    serverComponentsExternalPackages: ['bcryptjs', '@prisma/client']
+    serverActions: true
   },
-  // Disable Edge Runtime for problematic pages
+  
+  // External packages for server components
+  serverExternalPackages: ['bcryptjs', '@prisma/client'],
+  
+  // Disable Edge Runtime for middleware to reduce bundle size
+  experimental: {
+    serverActions: true,
+    // Disable middleware for now to avoid Edge Function size limit
+    middleware: false
+  },
+  
+  // Configure webpack for browser compatibility
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
