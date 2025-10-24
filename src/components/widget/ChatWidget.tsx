@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { MessageCircle, X, Send, Minimize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,21 +46,17 @@ export function ChatWidget({ chatbot }: ChatWidgetProps) {
   const position = settings.position || "bottom-right";
   const placeholder = settings.placeholder || "Type your message...";
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, []);
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, scrollToBottom]);
 
-  useEffect(() => {
-    if (isOpen && !conversationId) {
-      initConversation();
-    }
-  }, [isOpen]);
-
-  const initConversation = async () => {
+  const initConversation = useCallback(async () => {
+    if (!isOpen || conversationId) return;
+    
     try {
       const response = await fetch("/api/widget/conversation", {
         method: "POST",
@@ -79,7 +75,7 @@ export function ChatWidget({ chatbot }: ChatWidgetProps) {
     } catch (error) {
       console.error("Failed to init conversation:", error);
     }
-  };
+  }, [isOpen, conversationId, chatbot.id, visitorId]);
 
   const sendMessage = async () => {
     if (!inputValue.trim() || !conversationId) return;
