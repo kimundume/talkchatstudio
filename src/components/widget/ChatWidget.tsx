@@ -12,11 +12,19 @@ type Message = {
   createdAt: Date;
 };
 
+type ChatbotSettings = {
+  primaryColor?: string;
+  secondaryColor?: string;
+  position?: string;
+  placeholder?: string;
+  [key: string]: unknown;
+};
+
 type ChatWidgetProps = {
   chatbot: {
     id: string;
     name: string;
-    settings: any;
+    settings?: ChatbotSettings;
   };
 };
 
@@ -54,7 +62,7 @@ export function ChatWidget({ chatbot }: ChatWidgetProps) {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  const initConversation = useCallback(async () => {
+  const initConversation = useCallback(async (): Promise<void> => {
     if (!isOpen || conversationId) return;
     
     try {
@@ -75,7 +83,7 @@ export function ChatWidget({ chatbot }: ChatWidgetProps) {
     } catch (error) {
       console.error("Failed to init conversation:", error);
     }
-  }, [isOpen, conversationId, chatbot.id, visitorId]);
+  }, [isOpen, conversationId, chatbot.id, visitorId, setConversationId, setMessages]);
 
   const sendMessage = async () => {
     if (!inputValue.trim() || !conversationId) return;
