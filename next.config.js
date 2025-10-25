@@ -1,24 +1,25 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // For Netlify deployment
-  output: 'export',
+  // Disable static export for now - required for API routes and auth
+  // output: 'export',
+  
+  // Disable image optimization for static export
   images: {
     unoptimized: true,
   },
-  // Enable server actions
+  
+  // Configure server actions
   experimental: {
-    serverActions: true
+    serverActions: {
+      // Allow server actions in client components
+      allowedOrigins: ['*'],
+    },
+    // Disable middleware for now to avoid Edge Function size limit
+    middleware: false
   },
   
   // External packages for server components
   serverExternalPackages: ['bcryptjs', '@prisma/client'],
-  
-  // Disable Edge Runtime for middleware to reduce bundle size
-  experimental: {
-    serverActions: true,
-    // Disable middleware for now to avoid Edge Function size limit
-    middleware: false
-  },
   
   // Configure webpack for browser compatibility
   webpack: (config, { isServer }) => {
@@ -40,31 +41,13 @@ const nextConfig = {
     }
     return config;
   },
+  
+  // Ignore TypeScript and ESLint errors during build
   eslint: {
-    // Warning: This allows production builds to successfully complete even if your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // Warning: This allows production builds to successfully complete even if your project has type errors.
     ignoreBuildErrors: true,
-  },
-  webpack: (config) => {
-    // This makes sure that certain Node.js modules are properly bundled
-    config.resolve.fallback = { 
-      ...config.resolve.fallback,
-      fs: false,
-      net: false,
-      tls: false,
-      dns: false,
-      child_process: false,
-      crypto: require.resolve('crypto-browserify'),
-      stream: require.resolve('stream-browserify'),
-      http: require.resolve('stream-http'),
-      https: require.resolve('https-browserify'),
-      os: require.resolve('os-browserify/browser'),
-      path: require.resolve('path-browserify'),
-    };
-    return config;
   },
 }
 
