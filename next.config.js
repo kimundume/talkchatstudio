@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Disable static export - required for API routes
+  // Use standalone output for better compatibility with Netlify
   output: 'standalone',
   
   // Disable image optimization for static export
@@ -46,21 +46,32 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  
   typescript: {
     ignoreBuildErrors: true,
   },
   
-  // Configure API routes to avoid Edge Runtime
+  // Configure API routes
   api: {
     bodyParser: {
       sizeLimit: '1mb',
     },
+    // Disable body parsing for API routes
+    responseLimit: false,
   },
   
   // Disable Edge Runtime for API routes
   experimental: {
     runtime: 'nodejs',
+    // Enable server components external packages
+    serverComponentsExternalPackages: ['@prisma/client', 'bcryptjs'],
   },
+  
+  // Enable production browser source maps
+  productionBrowserSourceMaps: false,
+  
+  // Disable React Strict Mode for better compatibility
+  reactStrictMode: false,
 }
 
 module.exports = nextConfig
