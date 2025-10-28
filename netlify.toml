@@ -18,13 +18,17 @@
 
 # Required for Next.js
 [functions]
-  external_node_modules = ["@prisma/client", "@prisma/engines", "prisma"]
+  external_node_modules = ["@prisma/client", "@prisma/engines", "prisma", "bcryptjs"]
   node_bundler = "esbuild"
   included_files = ["prisma/**"]
+  # Increase timeout for Prisma operations
+  timeout = 10
 
 # Next.js plugin configuration
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+  [plugins.inputs]
+    functions = "netlify/functions"
 
 # Handle Next.js static files
 [[headers]]

@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Use standalone output for better compatibility with Netlify
   output: 'standalone',
   
   // Disable image optimization for static export
@@ -17,11 +16,12 @@ const nextConfig = {
     },
     // Disable middleware for now to avoid Edge Function size limit
     middleware: false,
-    // Disable Edge Runtime for API routes
+    // External packages for server components
     serverComponentsExternalPackages: ['@prisma/client', 'bcryptjs'],
-    // Disable Edge Runtime for API routes
-    runtime: 'nodejs',
   },
+  
+  // Disable Edge Runtime by default
+  runtime: 'nodejs',
   
   // Configure webpack for browser compatibility
   webpack: (config, { isServer }) => {
