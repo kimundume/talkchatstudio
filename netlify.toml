@@ -25,10 +25,6 @@
 # Next.js plugin configuration
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-  [plugins.inputs]
-    functions_src = ".next/server/functions"
-    functions_dist = "netlify/functions"
-    generate_functions = true
 
 # Handle Next.js static files
 [[headers]]
