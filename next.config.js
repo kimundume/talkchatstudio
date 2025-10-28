@@ -1,25 +1,25 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Disable static export for now - required for API routes and auth
-  // output: 'export',
+  // Disable static export - required for API routes
+  output: 'standalone',
   
   // Disable image optimization for static export
   images: {
     unoptimized: true,
   },
   
-  // Configure server actions
+  // Configure experimental features
   experimental: {
+    // Enable server actions
     serverActions: {
-      // Allow server actions in client components
+      bodySizeLimit: '2mb',
       allowedOrigins: ['*'],
     },
     // Disable middleware for now to avoid Edge Function size limit
-    middleware: false
+    middleware: false,
+    // Disable Edge Runtime for API routes
+    serverComponentsExternalPackages: ['@prisma/client', 'bcryptjs'],
   },
-  
-  // External packages for server components
-  serverExternalPackages: ['bcryptjs', '@prisma/client'],
   
   // Configure webpack for browser compatibility
   webpack: (config, { isServer }) => {
@@ -48,6 +48,18 @@ const nextConfig = {
   },
   typescript: {
     ignoreBuildErrors: true,
+  },
+  
+  // Configure API routes to avoid Edge Runtime
+  api: {
+    bodyParser: {
+      sizeLimit: '1mb',
+    },
+  },
+  
+  // Disable Edge Runtime for API routes
+  experimental: {
+    runtime: 'nodejs',
   },
 }
 
